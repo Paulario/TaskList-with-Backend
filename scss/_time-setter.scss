@@ -1,0 +1,41 @@
+.time-setter {
+    @include inline-flex(row, center, center);
+    position: absolute;
+    font-size: 2rem;
+    font-family: $main-font;
+    color: $font-help-color;
+    box-shadow: inset 0 0 15px steelblue;
+    border-radius: 40%;
+    padding: 0 0.5rem;
+
+    &-hours, &-minutes {
+        @include flex(column, center, center);
+    }
+
+    .arrow-up, .arrow-down {
+        @include flex(row, center, center);
+        font-size: 1em;
+    }
+
+    .arrow-up {
+        transform: translateY(25%);
+    }
+
+    .arrow-down {
+        transform: translateY(-25%);
+    }
+
+    .value {
+        @include flex(row, center, center);
+        width: 1.5em;
+        height: 40px;
+        font-size: 2rem;
+        font-family: $main-font;
+        background: none;
+        border: 0;
+        outline: 0;
+        text-align: center;
+        color: $font-help-color;
+    }
+}
+

@@ -1,0 +1,243 @@
+@font-face {
+  font-family: Lora;
+  src: url("../fonts/Lora/Lora-VariableFont_wght.ttf");
+}
+.time-setter {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  font-size: 2rem;
+  font-family: Lora;
+  color: rgba(0, 0, 0, 0.6);
+  box-shadow: inset 0 0 15px steelblue;
+  border-radius: 40%;
+  padding: 0 0.5rem;
+}
+.time-setter-hours, .time-setter-minutes {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.time-setter .arrow-up, .time-setter .arrow-down {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+}
+.time-setter .arrow-up {
+  transform: translateY(25%);
+}
+.time-setter .arrow-down {
+  transform: translateY(-25%);
+}
+.time-setter .value {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 1.5em;
+  height: 40px;
+  font-size: 2rem;
+  font-family: Lora;
+  background: none;
+  border: 0;
+  outline: 0;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow: hidden;
+}
+
+.container {
+  width: 100%;
+  height: 100vh;
+  background-color: bisque;
+  padding: 2em;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family: Lora;
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+.task-tree {
+  padding: 0 1em 0 1em;
+  height: 80%;
+  overflow-y: auto;
+  scrollbar-width: 7px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+.task-tree ul {
+  list-style: none;
+}
+.task-tree .task {
+  line-height: 1.4rem;
+  font-size: 1.4rem;
+}
+.task-tree .task .subtask, .task-tree .task .subtask-add {
+  margin-left: 1em;
+}
+.task-tree .task .subtask-add {
+  display: block;
+}
+.task-tree .task .subtask-add input[type=text] {
+  background: none;
+  border: 0;
+  outline: 0;
+  width: 19.5rem;
+  font-size: 1rem;
+  margin: 0 0 0 1rem;
+  padding: 0.25em 0.75em;
+}
+.task-tree .task .subtask-add input[type=text]:focus {
+  background-color: white;
+}
+.task-tree .task .subtask-add input[type=button] {
+  width: 3rem;
+  color: darkblue;
+  font-weight: bold;
+  box-shadow: inset 0 0 10px skyblue;
+  border-radius: 10%;
+  outline: 0;
+  padding: 0.25em 0.75em;
+  border: 1px solid steelblue;
+  background-color: transparent;
+}
+.task-tree .task .subtask-add input[type=button]:focus {
+  outline: 2px solid black;
+}
+.task-tree .task .task-text {
+  position: relative;
+}
+.task-tree .task .task-text input[type=text] {
+  width: 20rem;
+  padding: 0.1em 0.25em;
+  outline: 0;
+  border: 0;
+  font-size: 1.4rem;
+  border-bottom: 1px solid black;
+  background: none;
+  text-transform: capitalize;
+  margin-bottom: 0.2rem;
+  transition: background-color 0.3s, box-shadow 0.3s;
+}
+.task-tree .task .task-text input[type=text]:focus {
+  background-color: white;
+  font-weight: normal;
+  border-left: 5px solid steelblue;
+}
+.task-tree .task .task-text input[type=text]:hover {
+  font-weight: bold;
+}
+.task-tree .task .task-text::before {
+  content: "";
+  position: absolute;
+  border-bottom: 2px solid black;
+  width: 0;
+  height: 0;
+  top: 50%;
+  left: 0;
+  transition: all 0.3s;
+}
+.task-tree .task .task-tree-checkbox:checked ~ .task-text::before {
+  width: 100%;
+}
+.task-tree .task .task-tree-checkbox:checked ~ .task-text input {
+  border: 0;
+}
+.task-tree-checkbox {
+  margin-right: 0.25em;
+}
+.task-tree::-webkit-scrollbar {
+  width: 7px;
+}
+.task-tree::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.7);
+}
+.task-tree::-webkit-scrollbar-thumb {
+  background-color: darkgray;
+  outline: 1px solid slategrey;
+}
+
+.task-add {
+  height: 15%;
+  width: 60%;
+  padding: 0.25em;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.task-add form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.task-add form input[name=taskInput] {
+  display: block;
+  width: 70%;
+  background: white;
+  border: 0;
+  outline: 0;
+  width: 19.5rem;
+  font-size: 1rem;
+  margin-right: 0.75rem;
+  padding: 0.25em 0.75em;
+}
+.task-add form input[name=taskAdd] {
+  display: block;
+  width: 25%;
+  color: darkblue;
+  font-weight: bold;
+  box-shadow: inset 0 0 10px skyblue;
+  border-radius: 10%;
+  outline: 0;
+  padding: 0.25em 0.75em;
+  border: 1px solid steelblue;
+  background-color: transparent;
+}
+.task-add form input[name=taskAdd]:focus {
+  outline: 2px solid black;
+}
+
+.d-none {
+  display: none;
+}
+
+.fas.fa-minus {
+  color: orange;
+  margin-left: 0.1em;
+}
+
+.fas {
+  color: steelblue;
+}
+
+[class*=chevron-circle] {
+  margin-right: 0.1em;
+}
+
+.fa-trash-alt {
+  margin-left: 0.1em;
+  color: tomato;
+}
+
+/*# sourceMappingURL=main.css.map */

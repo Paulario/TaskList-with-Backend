@@ -1,0 +1,13 @@
+@mixin flex($d, $jc, $ai)  {
+    display: flex;
+    flex-direction: $d;
+    justify-content: $jc;
+    align-items: $ai;
+}
+
+@mixin inline-flex($d, $jc, $ai)  {
+    display: inline-flex;
+    flex-direction: $d;
+    justify-content: $jc;
+    align-items: $ai;
+}
