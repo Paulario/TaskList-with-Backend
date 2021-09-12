@@ -1,224 +1,137 @@
-import { $, getIdSetter, clone, renameKey, getRandom  } from './helpers.js';
+import { $ } from "./helpers.js";
+import { Tasklist, Task, Subtask } from "./tasklist.js";
 
-const TREE = document.querySelector('.task-tree');
-const ADD_FORM = document.forms['task-add-form'];
-
-let icons = {
-    arrowRight: '<i class="fas fa-chevron-circle-right"></i>',
-    arrowDown:  '<i class="fas fa-chevron-circle-down"></i>',
-    trash: '<i class="fas fa-trash-alt"></i>',
-    minusSign: '<i class="fas fa-minus"></i>'
+const LIST = $("#task-list");
+const ADD_FORM = $('form[name="task-add-form"]');
+const ICONS = {
+    arrowRight: '<i class="fas fa-chevron-circle-right" data-function="toggleMinified"></i>',
+    arrowDown: '<i class="fas fa-chevron-circle-down" data-function="toggleMinified"></i>',
+    trash: '<i class="fas fa-trash-alt" data-function="removeTask"></i>',
+    minusSign: '<i class="fas fa-minus" data-function="removeSubtask"></i>',
 };
 
-let setID = getIdSetter().getID;
-let updateIdList = getIdSetter().updateIdList;
+render();
 
-const toDoList = {
-    'task1': {
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: { 
-            'subtask1': {completed: false, id: setID()},
-            'subtask2': {completed: false, id: setID()},
-            'subtask3': {completed: false, id: setID()},
-        }
-    },
-    'task2': { 
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: {
-            'subtask1': {completed: false, id: setID()},
-            'subtask2': {completed: false, id: setID()},
-        }
-    },
-    'task3': {
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: {},
-    },
-    'task4': { 
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: {
-            'subtask1': {completed: false, id: setID()},
-            'subtask2': {completed: false, id: setID()},
-            'subtask3': {completed: false, id: setID()},
-            'subtask4': {completed: false, id: setID()},
-            'subtask5': {completed: false, id: setID()},
-        }
-    },
-    'task5': { 
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: {
-            'subtask1': {completed: false, id: setID()},
-            'subtask2': {completed: false, id: setID()},
-            'subtask3': {completed: false, id: setID()},
-            'subtask4': {completed: false, id: setID()},
-            'subtask5': {completed: false, id: setID()},
-        }
-    },
-    'task6': { 
-        completed: false,
-        opened: false,
-        id: setID(),
-        subtaskList: {
-            'subtask1': {completed: false, id: setID()},
-            'subtask2': {completed: false, id: setID()},
-            'subtask3': {completed: false, id: setID()},
-            'subtask4': {completed: false, id: setID()},
-            'subtask5': {completed: false, id: setID()},
-        }
-    },
-}
+ADD_FORM.addEventListener("submit", function(event) {
+    event.preventDefault();
+    addTask();
+});
 
-updateTaskTree();
-ADD_FORM.addEventListener('click', addTask);
-TREE.addEventListener('click', toggleSubtaskList);
-TREE.addEventListener('click', removeSubtask);
-TREE.addEventListener('click', removeTask);
-
-function addTask(event){
-    if(event.target === this.taskAdd){
-        if(this.taskInput.value){
-            toDoList[this.taskInput.value] = {
-                completed: false,
-                opened: false,
-                id: setID(),
-                subtaskList: {},
-            };
-            this.taskInput.value = '';
+LIST.addEventListener("click", event => {
+    let t = event.target;
+    if(t.dataset.function === 'addSubtask') { 
+        addSubtask(t);
+    }
+    if(t.dataset.function === 'removeTask') {
+        removeTask(t);
+    }
+    if(t.dataset.function === 'removeSubtask') {
+        removeSubtask(t);
+    }
+    if(t.dataset.function === 'toggleChecked') {
+        let taskID = getTaskID(t);
+        if(t.closest('.subtask')){
+            let N = t.closest('.subtask').dataset.n;
+            Tasklist.toggleChecked(taskID, N);
+        } else {
+            Tasklist.toggleChecked(taskID);
         }
     }
-    updateTaskTree();
-}
-
-function updateTaskTree(){
-    TREE.innerHTML = '';
-    listFromObject(toDoList, TREE);
-    for(const task of TREE.lastElementChild.children){
-        let taskKey = task.querySelector('.task-text input').value;
-        task.classList.add('task', 'main-task');
-        task.id = toDoList[taskKey].id;
-        task.querySelector('span').insertAdjacentHTML('afterend', icons.trash);
-        task.querySelector('span').insertAdjacentHTML('beforebegin', icons.arrowDown);
-        addCheckbox(task,'root-task');
-        for(const subtask of task.lastElementChild.children){
-            let subtaskKey = subtask.querySelector('.task-text input').value;
-            subtask.classList.add('task', 'subtask');
-            subtask.id = toDoList[taskKey].subtaskList[subtaskKey].id;
-            subtask.querySelector('.task-text').insertAdjacentHTML('afterend', icons.minusSign);
-            addCheckbox(subtask, 'subtask');
-        }
+    if(t.dataset.function === 'toggleMinified') {
+        let taskID = getTaskID(t);
+        Tasklist.toggleMinified(taskID);
+        render();
     }
-    addSubtaskInputs();
-    checkTaskState();
+});
+
+async function removeSubtask(target) {
+    let N = target.closest('.subtask').dataset.n;
+    let taskID = getTaskID(target);
+    await Tasklist.removeSubtask(taskID, N);
+    render();
 }
 
-
-function toggleSubtaskList(event){
-    let check = event.target.matches('.fa-chevron-circle-down, .fa-chevron-circle-right');
-    if(check){
-        let target = event.target.closest('.task');
-        target.querySelector('ul').classList.toggle('d-none');
-        target.querySelector('.fas').classList.toggle('fa-chevron-circle-down');
-        target.querySelector('.fas').classList.toggle('fa-chevron-circle-right');
+async function addTask() {
+    if(ADD_FORM.taskInput.value) {
+        await Tasklist.add(new Task(ADD_FORM.taskInput.value));
+        render();
+        ADD_FORM.reset();
     }
 }
 
-
-function listFromObject(object, whereToAppend = document.body){
-    let outerUL = document.createElement('ul');
-    for(const outerKey in object){
-        let outerLI = document.createElement('li');
-        let html = `<span class="task-text">
-                        <input type="text" maxlength="23" value="${outerKey}">
-                    </span>`;
-        outerLI.insertAdjacentHTML('afterbegin', html);
-        outerUL.append(outerLI);
-        let innerUL = document.createElement('ul');
-        for(const innerKey in object[outerKey].subtaskList){
-            let innerLI = document.createElement('li');
-            html = `<span class="task-text">
-                            <input type="text" maxlength="23" value="${innerKey}">
-                        </span>`;
-            innerLI.insertAdjacentHTML('afterbegin', html);
-            innerUL.append(innerLI);
-        }
-        outerLI.append(innerUL);
-    }
-    whereToAppend.append(outerUL);
+async function removeTask(target) {
+    let taskID = getTaskID(target);
+    await Tasklist.remove(taskID);
+    render();
+    ADD_FORM.reset();
 }
 
-function addCheckbox(li, _class){
-    li.insertAdjacentHTML('afterbegin',
-        `<input type="checkbox" class="task-tree-checkbox ${_class}"> `);
+
+async function addSubtask(target) {
+    let taskID = getTaskID(target);
+    let content = target.previousElementSibling.value
+    let newSubtask = new Subtask(content);
+    await Tasklist.addSubtask(taskID, newSubtask);
+    render();
 }
 
-function removeSubtask(event){
-    if(event.target.matches('.fa-minus')){
-        let subtask = event.target.closest('.subtask');
-        let task = subtask.closest('.main-task');
-        let subtaskText = subtask.querySelector('input[type="text"]').value;
-        let taskText = task.querySelector('.task-text input[type="text"]').value;
-        delete toDoList[taskText].subtaskList[subtaskText];
-        subtask.remove();
-    }
+async function render() {
+    let TASKS = await Tasklist.get();
+    LIST.innerHTML = '';
+    TASKS.forEach(taskObj => {
+        renderTask(taskObj);
+    });
 }
 
-function removeTask(event){
-    if(event.target.matches('.fa-trash-alt')){
-        let task = event.target.closest('.task.main-task');
-        let taskText = task.querySelector('.task-text input[type="text"]').value;
-        delete toDoList[taskText];
-        task.remove();
-    }
+function renderTask(taskObj) {
+    let template = `<li class="task main-task" data-id="${taskObj.id}">
+                        <input type="checkbox" class="task-checkbox" ${taskObj.checked ? 'checked' : ''} data-function="toggleChecked"}> 
+                        <button type="button" name="minify" data-function="minify">
+                            ${ taskObj.minified ? ICONS.arrowRight : ICONS.arrowDown }
+                        </button>
+                        <span class="task-text"> 
+                            <input type="text" maxlength="23" value="${taskObj.content}">
+                        </span>
+                        <button type="button" name="removeTask" data-function="removeTask">
+                            ${ICONS.trash}
+                        </button>
+                        <ul class="subtask-list ${!taskObj.minified ? "d-none" : "" }">
+                            ${renderSubtasks(taskObj)}
+                        </ul>
+                        <span class="subtask-add">
+                            <input type="text" maxlength="23" placeholder="Enter an action">
+                            <input type="button" value="Add" data-function="addSubtask">
+                        </span>
+                    </li>`;
+    LIST.insertAdjacentHTML('beforeend', template);
 }
 
-function addSubtaskInputs(){
-    for(const task of TREE.querySelectorAll('.task.main-task')){
-        let ul = task.querySelector('ul');
-        let liSubtaskAdd = document.createElement('li');
-        let html = `<span class="subtask-add">
-            <input type="text" maxlength="23" placeholder="Enter an action">
-            <input type="button" value="Add">
-        </span>`;
-        liSubtaskAdd.insertAdjacentHTML('afterbegin', html);
-        liSubtaskAdd
-            .querySelector('input[type="button"]')
-            .addEventListener('click', addSubtask);
-        ul.append(liSubtaskAdd);
-    }
-}
-
-function addSubtask(){
-    let subtaskText = this.previousElementSibling.value;
-    console.log(subtaskText);
-    if(subtaskText){
-        let taskText = this.closest('.task.main-task').querySelector('.task-text input').value;
-        toDoList[taskText].subtaskList[subtaskText] = {completed: false, id: setID()};
-        updateTaskTree()
+function renderSubtasks(taskObj) {
+    if(taskObj.subtasks.length) {
+        let out = '';
+        taskObj.subtasks.forEach(subtask => {
+            let template = `<li class="task subtask" data-n="${subtask.N}">
+                                <input type="checkbox" class="task-checkbox" ${subtask.checked ? 'checked' : ''} data-function="toggleChecked"}>
+                                <span class="task-text"> 
+                                    <input type="text" maxlength="23" value="${subtask.content}">
+                                </span>
+                                <button type="button" data-function="removeSubtask">
+                                    ${ICONS.minusSign}
+                                </button>
+                            </li>`;
+            out += template;
+        });
+        return out;
+    } else {
+        return '';
     }
 }
 
-function checkTaskState(){
-    let checkboxes = TREE.querySelectorAll('input[type="checkbox"]');
-    for(const checkbox of checkboxes){
-        if(checkbox.checked){
-            checkbox.closest('.task')
-                .querySelector('input[type="text"]')
-                .disabled = true;
-        }
+function getTaskID(elem) {
+    let task = elem.closest('.main-task');
+    if(task) {
+        return task.dataset.id;
     }
 }
 
-// function rewriteOnBlur(){
-//     let oldText = event.target.closest('.task');
-//     if(event.target.value === ''){
-//         event.target.value = '';
-//     }
+

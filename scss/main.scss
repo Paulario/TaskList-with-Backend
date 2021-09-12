@@ -38,12 +38,11 @@ body {
     ul {
         list-style: none;
     }
-    .task {
+    .main-task {
         line-height: 1.4rem;
         font-size: 1.4rem;
         .subtask, .subtask-add {
             margin-left: 1em;
-            // border: 1px dashed blue;
         }
         & .subtask-add  {
             display: block;
@@ -86,7 +85,7 @@ body {
                 background: none;
                 text-transform: capitalize;
                 margin-bottom: 0.2rem;
-                transition: background-color 0.3s, box-shadow 0.3s;
+                transition: all 0.3s;
                 &:focus {
                     background-color: white;
                     font-weight: normal;
@@ -99,7 +98,7 @@ body {
             &::before {
                 content: '';
                 position: absolute;
-                border-bottom: 2px solid black;
+                border-bottom: 1px solid black;
                 width: 0;
                 height: 0;
                 top: 50%;
@@ -107,14 +106,13 @@ body {
                 transition: all 0.3s;
             }
         }
-        .task-tree-checkbox:checked ~ .task-text::before {
+        .task-checkbox:checked ~ .task-text::before {
             width: 100%;
         }
-        .task-tree-checkbox:checked ~ .task-text input {
+        .task-checkbox:checked ~ .task-text input {
+            color: gray;
             border: 0;
         }
-
-
     }
     &-checkbox {
         margin-right: 0.25em;
@@ -132,7 +130,7 @@ body {
 }
 
 .task-add {
-    height: 15%;
+    height: 8%;
     width: 60%;
     // border: 5px dashed steelblue;
     padding: 0.25em;
@@ -177,14 +175,26 @@ body {
     color: orange;
     margin-left: 0.1em;
 }
+
 .fas {
     color: steelblue;
 }
+
 [class*="chevron-circle"] {
     margin-right: 0.1em;
 }
+
 .fa-trash-alt {
     margin-left: 0.1em;
     color: tomato;
 }
+
+button {
+    font-size: inherit;;
+    padding: 5px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
 

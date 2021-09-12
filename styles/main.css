@@ -87,17 +87,17 @@ body {
 .task-tree ul {
   list-style: none;
 }
-.task-tree .task {
+.task-tree .main-task {
   line-height: 1.4rem;
   font-size: 1.4rem;
 }
-.task-tree .task .subtask, .task-tree .task .subtask-add {
+.task-tree .main-task .subtask, .task-tree .main-task .subtask-add {
   margin-left: 1em;
 }
-.task-tree .task .subtask-add {
+.task-tree .main-task .subtask-add {
   display: block;
 }
-.task-tree .task .subtask-add input[type=text] {
+.task-tree .main-task .subtask-add input[type=text] {
   background: none;
   border: 0;
   outline: 0;
@@ -106,10 +106,10 @@ body {
   margin: 0 0 0 1rem;
   padding: 0.25em 0.75em;
 }
-.task-tree .task .subtask-add input[type=text]:focus {
+.task-tree .main-task .subtask-add input[type=text]:focus {
   background-color: white;
 }
-.task-tree .task .subtask-add input[type=button] {
+.task-tree .main-task .subtask-add input[type=button] {
   width: 3rem;
   color: darkblue;
   font-weight: bold;
@@ -120,13 +120,13 @@ body {
   border: 1px solid steelblue;
   background-color: transparent;
 }
-.task-tree .task .subtask-add input[type=button]:focus {
+.task-tree .main-task .subtask-add input[type=button]:focus {
   outline: 2px solid black;
 }
-.task-tree .task .task-text {
+.task-tree .main-task .task-text {
   position: relative;
 }
-.task-tree .task .task-text input[type=text] {
+.task-tree .main-task .task-text input[type=text] {
   width: 20rem;
   padding: 0.1em 0.25em;
   outline: 0;
@@ -136,30 +136,31 @@ body {
   background: none;
   text-transform: capitalize;
   margin-bottom: 0.2rem;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  transition: all 0.3s;
 }
-.task-tree .task .task-text input[type=text]:focus {
+.task-tree .main-task .task-text input[type=text]:focus {
   background-color: white;
   font-weight: normal;
   border-left: 5px solid steelblue;
 }
-.task-tree .task .task-text input[type=text]:hover {
+.task-tree .main-task .task-text input[type=text]:hover {
   font-weight: bold;
 }
-.task-tree .task .task-text::before {
+.task-tree .main-task .task-text::before {
   content: "";
   position: absolute;
-  border-bottom: 2px solid black;
+  border-bottom: 1px solid black;
   width: 0;
   height: 0;
   top: 50%;
   left: 0;
   transition: all 0.3s;
 }
-.task-tree .task .task-tree-checkbox:checked ~ .task-text::before {
+.task-tree .main-task .task-checkbox:checked ~ .task-text::before {
   width: 100%;
 }
-.task-tree .task .task-tree-checkbox:checked ~ .task-text input {
+.task-tree .main-task .task-checkbox:checked ~ .task-text input {
+  color: gray;
   border: 0;
 }
 .task-tree-checkbox {
@@ -177,7 +178,7 @@ body {
 }
 
 .task-add {
-  height: 15%;
+  height: 8%;
   width: 60%;
   padding: 0.25em;
   display: flex;
@@ -238,6 +239,14 @@ body {
 .fa-trash-alt {
   margin-left: 0.1em;
   color: tomato;
+}
+
+button {
+  font-size: inherit;
+  padding: 5px;
+  border: none;
+  outline: none;
+  background-color: transparent;
 }
 
 /*# sourceMappingURL=main.css.map */
