@@ -1,18 +1,3 @@
 {
-  "tasks": [
-    {
-      "subtasks": [
-        {
-          "checked": false,
-          "minified": true,
-          "content": "1 round",
-          "N": 0
-        }
-      ],
-      "checked": false,
-      "minified": false,
-      "content": "Fight",
-      "id": 1
-    }
-  ]
+  "tasks": []
 }
